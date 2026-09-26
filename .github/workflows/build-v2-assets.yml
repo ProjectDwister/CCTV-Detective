@@ -1,0 +1,89 @@
+name: Build CCTV Detective V2 media assets
+
+on:
+  push:
+    paths:
+      - ".github/workflows/build-v2-assets.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Extract illustrated source art from previous game version
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64, pathlib, re, subprocess
+
+          old_commit = "d46fd155071c8e9180e96454aeca7d1c1a13250c"
+          html = subprocess.check_output(
+              ["git", "show", f"{old_commit}:index.html"],
+              text=True
+          )
+
+          assets = pathlib.Path("assets")
+          scenes = assets / "scenes"
+          videos = assets / "videos"
+          scenes.mkdir(parents=True, exist_ok=True)
+          videos.mkdir(parents=True, exist_ok=True)
+
+          hero = re.search(
+              r'<div class="hero-video hero-art"[^>]*><img src="data:image/jpeg;base64,([^"]+)"',
+              html
+          )
+          if not hero:
+              raise SystemExit("Could not locate detective portrait in historical index.html")
+          (assets / "detective.jpg").write_bytes(base64.b64decode(hero.group(1)))
+
+          for scene in ["lobby", "hallway", "elevator", "stairwell", "rooftop"]:
+              m = re.search(
+                  rf'\.feed\.{scene}\{{--scene:url\("data:image/webp;base64,([^"]+)"\)\}}',
+                  html
+              )
+              if not m:
+                  raise SystemExit(f"Could not locate {scene} scene in historical index.html")
+              (scenes / f"{scene}.webp").write_bytes(base64.b64decode(m.group(1)))
+
+          print("Extracted detective portrait and five illustrated CCTV scenes.")
+          PY
+
+      - name: Turn scene art into lightweight looping CCTV videos
+        shell: bash
+        run: |
+          set -e
+          for scene in lobby hallway elevator stairwell rooftop; do
+            ffmpeg -y -loop 1 -i "assets/scenes/${scene}.webp" \
+              -vf "zoompan=z='if(lte(zoom,1.0),1.0,min(zoom+0.00045,1.08))':x='iw/2-(iw/zoom/2)+sin(on/18)*10':y='ih/2-(ih/zoom/2)+cos(on/21)*6':d=192:s=960x540,eq=contrast=1.04:saturation=1.03:brightness=0.01,noise=alls=3:allf=t" \
+              -t 8 -r 24 -c:v libx264 -pix_fmt yuv420p -movflags +faststart "assets/videos/${scene}.mp4"
+          done
+
+      - name: Add nojekyll marker
+        run: touch .nojekyll
+
+      - name: Commit generated media assets
+        shell: bash
+        run: |
+          if git diff --quiet -- . ':!assets/videos' ':!assets/scenes' && [ -z "$(git status --porcelain assets .nojekyll)" ]; then
+            echo "No generated changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/detective.jpg assets/scenes assets/videos .nojekyll
+          git commit -m "Generate CCTV video and detective media assets"
+          git push
