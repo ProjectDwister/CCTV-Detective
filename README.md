@@ -1,19 +1,31 @@
-# CCTV Detective — The Grand Hotel Mystery
+# CCTV Detective — Grand Hotel Mysteries
 
-A visual, kid-friendly browser detective game. Watch animated CCTV feeds, scrub timelines, collect hidden clues, rebuild the route of the missing Moonstone Tiara, and solve the case.
+A kid-friendly browser detective game built for GitHub Pages.
 
-## Play
+## What changed in V2
 
-Once GitHub Pages is enabled for this repository, the game will be available at:
+- **Replayable cases** — every new case shuffles the missing object, culprit, and route.
+- **Looping CCTV videos** — each camera now uses a lightweight looping MP4 instead of a static still.
+- **Tap clues immediately** — you no longer need to wait for the exact timeline second. The clue hotspot is tappable right away.
+- **Timeline clue marker** — the `CLUE` button jumps close to the important moment in the feed.
+- **Recurring moving suspects** — suspect badges move through the hotel feed to make the scenes feel more alive.
+- **Difficulty modes** — Junior Detective, Detective, and Master Detective.
 
-**https://projectdwister.github.io/CCTV-Detective/**
+## Files
 
-## Case 01
+- `index.html` — main game shell
+- `styles.css` — styling
+- `app.js` — replayable case logic and gameplay
+- `assets/videos/*.mp4` — looping CCTV feeds
+- `assets/detective.svg` — hero art
 
-**The Missing Moonstone Tiara** — no violence, no scary content. The mystery has a playful ending.
+## Deploy on GitHub Pages
 
-## Tech
+1. Push the folder contents to the repo root.
+2. In GitHub repo settings, enable **Pages**.
+3. Set source to **Deploy from branch** → `main` → `/root`.
+4. Open the Pages URL after deployment.
 
-Vanilla HTML, CSS and JavaScript. No backend, no account, no tracking, and no external game engine.
+## Notes
 
-The protagonist artwork is a stylized fictional detective created from a user-provided reference photo; the original personal photos are not included in this repository.
+The game is fully client-side and requires no backend.
