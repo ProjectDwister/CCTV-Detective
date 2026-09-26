@@ -9,13 +9,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/webp" href="assets/detective-close.webp" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main id="app">
     <section id="titleScreen" class="screen title-screen active" aria-label="Game title">
       <div class="hero-video hero-art" aria-hidden="true">
-        <img src="assets/detective.jpg" alt="" />
+        <img src="assets/detective.svg" alt="" />
       </div>
       <div class="hero-shade"></div>
       <div class="hero-content">
@@ -58,7 +59,7 @@
       <div class="workspace">
         <aside class="detective-panel card">
           <div class="detective-photo">
-            <img src="assets/detective.jpg" alt="Young detective character holding a magnifying glass" />
+            <img src="assets/detective.svg" alt="Young detective character holding a magnifying glass" />
           </div>
           <div class="speech" id="detectiveSpeech">A new mystery is ready. Check the Lobby camera first.</div>
           <div class="case-facts">
@@ -124,7 +125,10 @@
           </div>
           <button id="backToCctv" class="icon-btn" type="button">✕</button>
         </div>
-        <p class="puzzle-copy" id="puzzleCopy">Tap the five locations in the order the mysterious purple case travelled.</p>
+        <div class="puzzle-intro">
+          <img class="detective-cameo" src="assets/detective-case.webp" alt="Detective studying the case" />
+          <p class="puzzle-copy" id="puzzleCopy">Tap the five locations in the order the mysterious purple case travelled.</p>
+        </div>
         <div class="hotel-map" id="hotelMap">
           <button data-place="Lobby" class="room lobby-room">Lobby<span>🛎️</span></button>
           <button data-place="Hallway" class="room hallway-room">Hallway<span>🖼️</span></button>
@@ -145,6 +149,7 @@
 
     <section id="finalScreen" class="screen final-screen" aria-label="Final deduction">
       <div class="final-card card">
+        <img class="final-detective" src="assets/detective-close.webp" alt="Detective ready for the final deduction" />
         <div class="moonstone" id="finalEmoji">💎</div>
         <span class="eyebrow">FINAL DEDUCTION</span>
         <h2 id="finalTitle">Who moved the tiara?</h2>
@@ -159,9 +164,12 @@
       <div class="win-card">
         <div class="badge">★ CASE SOLVED ★</div>
         <h2>Brilliant detective work!</h2>
-        <div class="reveal-scene">
-          <div class="glass-case" id="winEmoji">💎</div>
-          <div class="sparkles">✦ ✧ ✦</div>
+        <div class="win-visuals">
+          <img class="win-detective" src="assets/detective-full.webp" alt="Detective celebrating the solved case" />
+          <div class="reveal-scene">
+            <div class="glass-case" id="winEmoji">💎</div>
+            <div class="sparkles">✦ ✧ ✦</div>
+          </div>
         </div>
         <p id="winSummary">The manager hid the missing treasure as part of a surprise reveal.</p>
         <p class="score" id="scoreText">5/5 clues found</p>
